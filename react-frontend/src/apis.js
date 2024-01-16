@@ -1,6 +1,8 @@
 const headers = new Headers();
 headers.append("Content-Type", "application/json");
 
+const url = "http://localhost:8000"
+
 function handleLoginAttempt (user) {
     const promise = fetch(`http://localhost:8000/users/${user.username}`, {
       method: "POST",
@@ -24,9 +26,23 @@ function handleLoginAttempt (user) {
  }
 
  function getUsers() {
-  const url = "http://localhost:8000"
   const promise = fetch(`${url}/users`);
   return promise;
 }
 
- export { handleLoginAttempt, handleRegistrationAttempt, getUsers };
+function fetchUserByUsername(username) {
+  const promise = fetch(`${url}/users?username=${username}`);
+  return promise;
+}
+
+function fetchUserByPhone(phone) {
+  const promise = fetch(`${url}/users?phone=${phone}`);
+  return promise;
+}
+
+ export { handleLoginAttempt,
+          handleRegistrationAttempt,
+          getUsers,
+          fetchUserByUsername,
+          fetchUserByPhone
+        };

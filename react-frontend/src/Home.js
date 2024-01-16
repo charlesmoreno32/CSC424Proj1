@@ -23,8 +23,7 @@ export const Home = ({ onLogin }) => {
           username: username,
           password: password
         }
-      )
-        .then((res) => {
+      ).then((res) => {
           console.log(res);
           navigate("/landing");
         })
