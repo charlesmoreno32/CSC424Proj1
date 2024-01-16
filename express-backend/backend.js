@@ -39,6 +39,7 @@ app.post('/users', (req, res) => {
     const username = req.params['username'];
     const password = req.body.password;
     const password2 = req.body.password2;
+    const phone = req.body.phone;
     if(password !== password2) {
         console.log("Error: Passwords do not match");
     } else if (password.search(/[a-z]/) < 0){
@@ -49,7 +50,6 @@ app.post('/users', (req, res) => {
         console.log("Error: Password must contain at least one number");
     } else {
         console.log("Registration successful");
-        user.users_list.app
     }
 });
 
