@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+const headers = new Headers();
+headers.append("Content-Type", "application/json");
 
 function handleLoginAttempt (user) {
     const promise = fetch(`http://localhost:8000/users/${user.username}`, {
@@ -22,4 +23,10 @@ function handleLoginAttempt (user) {
     return promise;
  }
 
- export { handleLoginAttempt, handleRegistrationAttempt };
+ function getUsers() {
+  const url = "http://localhost:8000"
+  const promise = fetch(`${url}/users`);
+  return promise;
+}
+
+ export { handleLoginAttempt, handleRegistrationAttempt, getUsers };

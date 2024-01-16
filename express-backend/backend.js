@@ -22,13 +22,11 @@ app.get('/', (req, res) => {
 });
 
 app.post('/users/:user', (req, res) => {
-    const token = null;
+    var token = null;
     const user = req.body.username;
     const password = req.body.password;
-    console.log(user)
-    console.log(password)
     if(user === users.users_list[0].username && password === users.users_list[0].password) {
-        setToken("2342f2f1d131rf12");
+        token = {"token" : "2342f2f1d131rf12"};
         res.status(200).send(token);
     } else {
         res.status(400).send("Login Attempt Failed. Invalid username or password")
@@ -39,20 +37,24 @@ app.post('/users/:user', (req, res) => {
 app.post('/users', (req, res) => {
     const userToAdd = req.body;
     const username = req.params['username'];
-    const password = req.params['password'];
-    const password2 = req.params['password2'];
+    const password = req.body.password;
+    const password2 = req.body.password2;
     if(password !== password2) {
-        console.log("Error: Passwords do not match")
+        console.log("Error: Passwords do not match");
     } else if (password.search(/[a-z]/) < 0){
-        console.log("Error: Password must contain at least one lowercase letter")
+        console.log("Error: Password must contain at least one lowercase letter");
     } else if (password.search(/[A-Z]/) < 0) {
-        console.log("Error: Password must contain at least one uppercase letter")
+        console.log("Error: Password must contain at least one uppercase letter");
     } else if (password.search(/[0-9]/) < 0) {
-        console.log("Error: Password must contain at least one number")
+        console.log("Error: Password must contain at least one number");
     } else {
-        console.log("Registration successful")
+        console.log("Registration successful");
+        user.users_list.app
     }
+});
 
+app.get('/users', (req, res) => {
+    /* Add being able to find one user as well */
 });
 
 app.listen(port, () => {
