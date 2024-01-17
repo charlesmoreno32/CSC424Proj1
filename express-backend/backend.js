@@ -24,30 +24,27 @@ app.post('/users/:user', (req, res) => {
     const inputPassword = req.body.password;
     findUserByUsername(inputUser)
     .then((users) => {
-        if(inputPassword === users[0].password) {
+        if(inputPassword != undefined && inputPassword === users[0].password) {
             console.log(users[0].password);
-            token = {"token" : "2342f2f1d131rf12"};
+            token = {"token": "2342f2f1d131rf12"};
             res.status(200).send(token);
         } else {
-            res.status(400).send("Login Attempt Failed. Invalid username or password");
+            res.status(401).send("Login Attempt Failed. Invalid username or password");
         }
     });
 });
 
 app.post('/users', (req, res) => {
-    const userToAdd = req.body;
-    const username = req.params['username'];
+    const username = req.body.username;
     const password = req.body.password;
     const password2 = req.body.password2;
     const phone = req.body.phone;
-    if(password !== password2) {
-        alert("Error: Passwords do not match")
+    if(password != password2) {
         console.log("Error: Passwords do not match");
-        res.status(400).send("Error: Passwords do not match");
-    } else if (password.search(/[a-z]/) < 0 || password.search(/[A-Z]/) < 0 || password.search(/[0-9]/) < 0){
-        alert("Error: Password must contain at least one lowercase letter, one uppercase letter and one number")
-        console.log("Error: Password must contain at least one lowercase letter, one uppercase letter and one number");
-        res.status(400).send("Error: Password must contain at least one lowercase letter, one uppercase letter and one number");
+        res.status(403).send("Error: Passwords do not match");
+    } else if (password.search(/[a-z]/) < 0 || password.search(/[A-Z]/) < 0 || password.search(/[0-9]/) < 0 || password.search(/[@$!%*?&]/) < 0){
+        console.log("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
+        res.status(403).send("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
     } else {
         addUser({username: username, password: password, phone: phone})
         .then((response) => res.status(201).send(response))

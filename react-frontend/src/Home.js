@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export const Home = ({ onLogin }) => { 
-   /*const { value } = useAuth();*/
+   const { value } = useAuth();
    const navigate = useNavigate();
    const [username, setUser] = useState('');
    const [password, setPassword] = useState('');
@@ -18,16 +18,14 @@ export const Home = ({ onLogin }) => {
       }
    }*/
    function handleSubmit(event) {
-      handleLoginAttempt(
-        {
-          username: username,
-          password: password
-        }
-      ).then((res) => {
+      value.username = username;
+      value.password = password;
+      handleLoginAttempt()
+      .then((res) => {
           console.log(res);
           navigate("/landing");
         })
-        .catch((exception) => console.log(exception));
+      .catch((exception) => console.log(exception));
     }
    
    return (

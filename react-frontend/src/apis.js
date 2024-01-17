@@ -1,21 +1,27 @@
+import { useAuth } from "./context/AuthProvider";
+
 const headers = new Headers();
 headers.append("Content-Type", "application/json");
 
+
 const url = "http://localhost:8000"
 
-function handleLoginAttempt (user) {
-    const promise = fetch(`http://localhost:8000/users/${user.username}`, {
+function handleLoginAttempt () {
+  const { value } = useAuth();
+  console.log(value.username);
+  const promise = fetch(`http://localhost:8000/users/${value.username}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
-    });
-    return promise;
+  });
+  console.log(promise);
+  return promise;
  }
 
  function handleRegistrationAttempt (user) {
-    const promise = fetch(`http://localhost:8000/users/`, {
+    const promise = fetch(`http://localhost:8000/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
