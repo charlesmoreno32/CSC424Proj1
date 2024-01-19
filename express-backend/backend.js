@@ -19,15 +19,15 @@ app.get('/', (req, res) => {
 });
 
 app.post('/users/:user', (req, res) => {
-    var token = null;
+    var toke = null;
     const inputUser = req.body.username;
     const inputPassword = req.body.password;
     findUserByUsername(inputUser)
     .then((users) => {
         if(inputPassword != undefined && inputPassword === users[0].password) {
             console.log(users[0].password);
-            token = {"token": "2342f2f1d131rf12"};
-            res.status(200).send(token);
+            toke = {token: "2342f2f1d131rf12"};
+            res.status(200).send(toke);
         } else {
             res.status(401).send("Login Attempt Failed. Invalid username or password");
         }
@@ -47,7 +47,7 @@ app.post('/users', (req, res) => {
         res.status(403).send("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
     } else {
         addUser({username: username, password: password, phone: phone})
-        .then((response) => res.status(201).send(response))
+        .then((response) => res.status(201).send({response, token: "2342f2f1d131rf12"}))
         .catch(() => {
             console.log(res.status(400).send("Invalid Formatting"));
         });

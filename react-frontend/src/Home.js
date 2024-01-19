@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { handleLoginAttempt } from './apis';
+import { HandleLoginAttempt } from './apis';
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
@@ -20,12 +20,7 @@ export const Home = ({ onLogin }) => {
    function handleSubmit(event) {
       value.username = username;
       value.password = password;
-      handleLoginAttempt()
-      .then((res) => {
-          console.log(res);
-          navigate("/landing");
-        })
-      .catch((exception) => console.log(exception));
+      value.onLogin();
     }
    
    return (

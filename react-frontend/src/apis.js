@@ -6,10 +6,8 @@ headers.append("Content-Type", "application/json");
 
 const url = "http://localhost:8000"
 
-function handleLoginAttempt () {
-  const { value } = useAuth();
-  console.log(value.username);
-  const promise = fetch(`http://localhost:8000/users/${value.username}`, {
+function HandleLoginAttempt (user) {
+  const promise = fetch(`http://localhost:8000/users/${user.username}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -46,7 +44,7 @@ function fetchUserByPhone(phone) {
   return promise;
 }
 
- export { handleLoginAttempt,
+ export { HandleLoginAttempt,
           handleRegistrationAttempt,
           getUsers,
           fetchUserByUsername,

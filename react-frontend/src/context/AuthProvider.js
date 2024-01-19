@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { fakeAuth } from "../utils/FakeAuth";
-import {handleLoginAttempt,
+import {HandleLoginAttempt,
   handleRegistrationAttempt} from "../apis.js"
 
 const AuthContext = createContext({});
@@ -12,10 +12,17 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
 
   const handleLogin = async () => {
-    const token = await handleLoginAttempt({username: value.username, password: value.password, phone: value.phone});
-    console.log(token);
-    setToken(token);
-    navigate("/landing");
+    HandleLoginAttempt({username: value.username, password: value.password})
+      .then((res) => {
+          if(res.status == 200){
+            console.log(res.body.token);
+            setToken(res.token);
+            navigate("/landing")
+          } else {
+            console.log("Login Attempt Failed. Invalid username or password")
+          };
+        })
+      .catch((exception) => console.log(exception));
   };
 
   const handleLogout = () => {
