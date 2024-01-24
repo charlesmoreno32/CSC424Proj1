@@ -18,7 +18,7 @@ function HandleLoginAttempt (user) {
   return promise;
  }
 
- function handleRegistrationAttempt (user) {
+ function HandleRegistrationAttempt (user) {
     const promise = fetch(`http://localhost:8000/users`, {
       method: "POST",
       headers: {
@@ -45,7 +45,7 @@ function fetchUserByPhone(phone) {
 }
 
  export { HandleLoginAttempt,
-          handleRegistrationAttempt,
+          HandleRegistrationAttempt,
           getUsers,
           fetchUserByUsername,
           fetchUserByPhone

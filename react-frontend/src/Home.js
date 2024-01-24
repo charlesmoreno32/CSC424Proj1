@@ -4,24 +4,17 @@ import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 
 
-export const Home = ({ onLogin }) => { 
+export const Home = () => { 
    const { value } = useAuth();
    const navigate = useNavigate();
    const [username, setUser] = useState('');
    const [password, setPassword] = useState('');
 
-   /*const handleLoginAttempt = (username, pass) => {
-      if (username === "bj" && pass === "pass424") {
-         value.onLogin();
-      } else {
-         alert("Login Attempt Failed. Invalid username or password.")
-      }
-   }*/
    function handleSubmit(event) {
       value.username = username;
       value.password = password;
       value.onLogin();
-    }
+   }
    
    return (
       <>

@@ -12,11 +12,16 @@ const UserSchema = new mongoose.Schema(
       required: true,
       trim: true,
       validate(value) {
-        if (value.length < 8)
-          throw new Error("Invalid password, must be at least 8 characters.");
+        if (value.length < 2)
+          throw new Error("Invalid password, must be at least 2 characters.");
       },
     },
     phone: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    token: {
       type: String,
       required: true,
       trim: true,

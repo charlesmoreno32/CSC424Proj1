@@ -11,26 +11,19 @@ import { AuthProvider } from "./context/AuthProvider"
 const App = () => {
     const [token, setToken] = React.useState(null);
 
-    const handleLogin = async () => {
-        const token = await fakeAuth();
-        setToken(token);
-    };
-    
-    const handleLogout = () => setToken(null);
-
     return (
         <AuthProvider>
             
             <Navigation />
             <h1>React Router</h1>
             <Routes>
-                <Route index element={<Home onLogin={handleLogin} />} />
+                <Route index element={<Home />} />
                 <Route path="landing" element={
                     <ProtectedRoute>
                     <Landing />
                     </ProtectedRoute>
                 } />
-                <Route path="home" element={ <Home onLogin={handleLogin} />} />
+                <Route path="home" element={ <Home />} />
                 <Route path="registration" element={ <Registration />} />
             </Routes>
             
