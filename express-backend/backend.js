@@ -1,7 +1,8 @@
 import express from "express";
+import https from "https";
+import fs from "fs";
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import crypto from "crypto";
 import dotenv from "dotenv";
 
 import {
@@ -15,15 +16,25 @@ dotenv.config();
 
 const app = express();
 const port = 8000;
-
 app.use(cors());
 app.use(express.json());
+
+https.createServer(
+    {
+      key: fs.readFileSync("key.pem"),
+      cert: fs.readFileSync("cert.pem"),
+    },
+    app
+).listen(port, () => {
+    console.log(`Example app listening at https://localhost:${port}`);
+});
 
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+/* User Login */
 app.post('/users/:user', (req, res) => {
     const inputUser = req.body.username;
     const inputPassword = req.body.password;
@@ -50,6 +61,7 @@ app.post('/users/:user', (req, res) => {
     });
 });
 
+/* User Registration */
 app.post('/users', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -57,7 +69,6 @@ app.post('/users', (req, res) => {
     const phone = req.body.phone;
     const token = jwt.sign({username: username}, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
     const user = {username: username, password: password, phone: phone, token: token};
-    console.log(token);
     if(password != password2) {
         console.log("Error: Passwords do not match");
         res.status(403).send("Error: Passwords do not match");
@@ -75,10 +86,11 @@ app.post('/users', (req, res) => {
     }
 });
 
-app.get('/users', (req, res) => {
+app.get('/users', authenticateToken, async (req, res) => {
     const username = req.query.username;
     const phone = req.query.phone;
-    getUsers(username, phone).then((response) => {
+    getUsers(username, phone)
+    .then((response) => {
         res.status(200).send(response);
     });
 });
@@ -88,7 +100,6 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(" ")[1];
   
     if (token == null) return res.sendStatus(401);
-  
     jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
         if (err) {
             console.log(err);
@@ -98,7 +109,3 @@ function authenticateToken(req, res, next) {
       next();
     });
   }
-
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});

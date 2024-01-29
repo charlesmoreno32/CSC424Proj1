@@ -4,22 +4,21 @@ const headers = new Headers();
 headers.append("Content-Type", "application/json");
 
 
-const url = "http://localhost:8000"
+const url = "https://localhost:8000"
 
 function HandleLoginAttempt (user) {
-  const promise = fetch(`http://localhost:8000/users/${user.username}`, {
+  const promise = fetch(`${url}/users/${user.username}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
   });
-  console.log(promise);
   return promise;
  }
 
  function HandleRegistrationAttempt (user) {
-    const promise = fetch(`http://localhost:8000/users`, {
+    const promise = fetch(`${url}/users`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,8 +28,12 @@ function HandleLoginAttempt (user) {
     return promise;
  }
 
- function getUsers() {
-  const promise = fetch(`${url}/users`);
+ function getUsers(cookie) {
+  const promise = fetch(`${url}/users`, {
+    headers: {
+      authorization: `Bearer ${cookie}`,
+    }
+  });
   return promise;
 }
 

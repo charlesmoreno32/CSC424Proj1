@@ -38,7 +38,7 @@ export const Home = () => {
             </label>
             <label>
                <button type="button" onClick={() => navigate("/registration")}>
-                  Register
+                  Sign Up
                </button>
             </label>
          </form>
