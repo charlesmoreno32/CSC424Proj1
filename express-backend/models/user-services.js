@@ -34,10 +34,13 @@ function findUserByPhone(phone) {
 
 async function addUser(user) {
   try {
-    if (await findUserByUsername(user.username)) return false;
-    const userToAdd = new userModel(user);
-    const savedUser = await userToAdd.save();
-    return savedUser;
+    if (await findUserByUsername(user.username)){;
+      const userToAdd = new userModel(user);
+      const savedUser = await userToAdd.save();
+      return savedUser;
+    } else {
+      return false
+    }
   } catch (error) {
     console.log(error);
     return false;
@@ -46,14 +49,17 @@ async function addUser(user) {
 
 async function updateUser(user) {
   try {
-    if (await findUserByUsername(user.username)) return true;
-    const updateDoc = {
-      $set: {
-        token: `${user.token}`
-      }
-    };
-    const result = await userModel.updateOne({username: user.username}, updateDoc);
-    return result;
+    if (await findUserByUsername(user.username)){
+      const updateDoc = {
+        $set: {
+          token: `${user.token}`
+        }
+      };
+      const result = await userModel.updateOne({username: user.username}, updateDoc);
+      return result;
+    } else {
+      return false;
+    }
   } catch (error) {
     console.log(error);
     return false;

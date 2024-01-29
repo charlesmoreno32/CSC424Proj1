@@ -37,7 +37,6 @@ const Navigation = () => {
         <nav>
             <Link to="/home">Home</Link>
             <Link to="/landing">Landing</Link>
-            <Link to="/registration">Registration</Link>
             {value.token && (
                 <button type="button" onClick={value.onLogout}>
                     Sign Out

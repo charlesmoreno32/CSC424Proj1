@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { HandleLoginAttempt } from './apis';
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import {HandleLoginAttempt} from "./apis.js"
 
 
 export const Home = () => { 
@@ -13,7 +13,12 @@ export const Home = () => {
    function handleSubmit(event) {
       value.username = username;
       value.password = password;
-      value.onLogin();
+      HandleLoginAttempt({username: value.username, password: value.password})
+      .then((res) => res.json())
+      .then((res) => {
+         value.onLogin(res.token);
+      })
+      .catch((exception) => console.log(exception));
    }
    
    return (
@@ -29,6 +34,11 @@ export const Home = () => {
             <label>
                <button type="button" onClick={() => handleSubmit({username, password})}>
                   Sign In
+               </button>
+            </label>
+            <label>
+               <button type="button" onClick={() => navigate("/registration")}>
+                  Register
                </button>
             </label>
          </form>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from "./context/AuthProvider";
+import {HandleRegistrationAttempt} from "./apis.js"
 
 
 export const Registration = () => { 
@@ -14,7 +15,12 @@ export const Registration = () => {
       value.password = password;
       value.password2 = password2;
       value.phone = phone;
-      value.onRegistration();
+      HandleRegistrationAttempt({username: value.username, password: value.password, password2: value.password2, phone: value.phone})
+      .then((res) => res.json())
+      .then((res) => {
+         value.onLogin(res.token);
+      })
+      .catch((exception) => console.log(exception));
    }
    
    return (
