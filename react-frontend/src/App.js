@@ -8,8 +8,6 @@ import { useAuth } from "./context/AuthProvider";
 import { AuthProvider } from "./context/AuthProvider";
 
 const App = () => {
-    const [token, setToken] = React.useState(null);
-
     return (
         <AuthProvider>
             

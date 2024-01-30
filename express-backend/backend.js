@@ -104,8 +104,8 @@ app.get('/cookie', authenticateToken, async (req, res) => {
     .then((response) => {
         res.status(200).send(response);
     })
-    .catch(() => {
-        console.log(res.status(400).send("Invalid cookie"));
+    .catch((error) => {
+        console.log(res.status(400).send(error));
     });
 });
 

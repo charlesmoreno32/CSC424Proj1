@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
   async function validateCookie() {
     try {
         const token = document.cookie && document.cookie.split("=")[1];
+        if (token) {
         checkCookie(token)
         .then((res) => res.json())
         .then((json) => {
@@ -20,9 +21,12 @@ export const AuthProvider = ({ children }) => {
             value.password = user.password;
             value.onLogin(user.token);
         })
-        .catch((error) => {  
+        .catch(() => {  
             return false;
         });
+      } else {
+        return false;
+      }
 
     } catch (error) {
         return false;
