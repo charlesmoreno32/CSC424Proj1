@@ -2,12 +2,10 @@ import { Routes, Route, Link } from "react-router-dom";
 import { Home } from "./Home";
 import { Landing } from "./Landing";
 import { Registration } from "./Registration";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { ProtectedRoute } from "./utils/ProtectedRoute";
-import fakeAuth from "./utils/FakeAuth";
 import { useAuth } from "./context/AuthProvider";
 import { AuthProvider } from "./context/AuthProvider";
-import {checkCookie} from "./apis.js";
 
 const App = () => {
     const [token, setToken] = React.useState(null);
@@ -34,31 +32,6 @@ const App = () => {
 
 const Navigation = () => {
     const { value } = useAuth();
-
-    async function validateCookie() {
-        try {
-            const token = document.cookie && document.cookie.split("=")[1];
-            checkCookie(token)
-            .then((res) => res.json())
-            .then((json) => {
-                const user = json[0];
-                value.username = user.username;
-                value.password = user.password;
-                value.onLogin(user.token);
-            })
-            .catch((error) => {  
-                return false;
-            });
-
-        } catch (error) {
-            /*value.loggedIn = false;*/
-            return false;
-        }
-    }
-
-    useEffect(() => {
-        validateCookie()
-    }, [] );
 
     return (
         <nav>

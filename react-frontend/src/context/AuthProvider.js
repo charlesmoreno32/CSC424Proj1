@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffectgit  } from "react";
 import { useNavigate } from "react-router-dom";
+import {checkCookie} from "../apis.js";
 
 const AuthContext = createContext({});
 
@@ -7,6 +8,26 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   const [token, setToken] = useState(null);
+
+  async function validateCookie() {
+    try {
+        const token = document.cookie && document.cookie.split("=")[1];
+        checkCookie(token)
+        .then((res) => res.json())
+        .then((json) => {
+            const user = json[0];
+            value.username = user.username;
+            value.password = user.password;
+            value.onLogin(user.token);
+        })
+        .catch((error) => {  
+            return false;
+        });
+
+    } catch (error) {
+        return false;
+    }
+  } 
 
   const handleLogin = async (token) => {
     document.cookie = `token=${token}`;
@@ -28,6 +49,10 @@ export const AuthProvider = ({ children }) => {
     onLogin: handleLogin,
     onLogout: handleLogout,
   };
+
+  useEffect(() => {
+    validateCookie()
+  }, [] );
 
   return (
     <AuthContext.Provider value={{ value }}>
