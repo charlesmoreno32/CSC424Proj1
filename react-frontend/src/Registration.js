@@ -17,7 +17,7 @@ export const Registration = () => {
       value.password = password;
       value.password2 = password2;
       value.phone = phone;
-      HandleRegistrationAttempt({username: value.username, password: value.password, password2: value.password2, phone: value.phone})
+      HandleRegistrationAttempt({username: value.username, password: value.password, password2: password2, phone: value.phone})
       .then((res) => res.json())
       .then((res) => {
          value.onLogin(res.token);

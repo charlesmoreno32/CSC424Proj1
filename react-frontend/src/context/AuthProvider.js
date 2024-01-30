@@ -48,7 +48,6 @@ export const AuthProvider = ({ children }) => {
     token,
     username: "",
     password: "",
-    password2: "",
     phone: "",
     onLogin: handleLogin,
     onLogout: handleLogout,
