@@ -13,21 +13,20 @@ export const AuthProvider = ({ children }) => {
     try {
         const token = document.cookie && document.cookie.split("=")[1];
         if (token) {
-        checkCookie(token)
-        .then((res) => res.json())
-        .then((json) => {
-            const user = json[0];
-            value.username = user.username;
-            value.password = user.password;
-            value.onLogin(user.token);
-        })
-        .catch(() => {  
-            return false;
-        });
-      } else {
-        return false;
-      }
-
+          checkCookie(token)
+          .then((res) => res.json())
+          .then((json) => {
+              const user = json[0];
+              value.username = user.username;
+              value.password = user.password;
+              value.onLogin(user.token);
+          })
+          .catch(() => {  
+              return false;
+          });
+        } else {
+          return false;
+        }
     } catch (error) {
         return false;
     }
