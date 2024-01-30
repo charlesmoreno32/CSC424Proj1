@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import {HandleLoginAttempt} from "./apis.js"
+import {HandleLoginAttempt, checkCookie} from "./apis.js";
 
 
 export const Home = () => { 
@@ -17,10 +17,11 @@ export const Home = () => {
       .then((res) => res.json())
       .then((res) => {
          value.onLogin(res.token);
+         navigate("/landing");
       })
       .catch((exception) => console.log(exception));
    }
-   
+
    return (
       <>
          <h2>Home (Public)</h2>

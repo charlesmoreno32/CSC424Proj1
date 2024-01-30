@@ -4,10 +4,12 @@ import fs from "fs";
 import cors from "cors";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+/*import crypto from "crypto"*/
 
 import {
     getUsers,
     findUserByUsername,
+    findUserByToken,
     addUser,
     updateUser
 } from "./models/user-services.js";
@@ -92,6 +94,18 @@ app.get('/users', authenticateToken, async (req, res) => {
     getUsers(username, phone)
     .then((response) => {
         res.status(200).send(response);
+    });
+});
+
+app.get('/cookie', authenticateToken, async (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    findUserByToken(token)
+    .then((response) => {
+        res.status(200).send(response);
+    })
+    .catch(() => {
+        console.log(res.status(400).send("Invalid cookie"));
     });
 });
 

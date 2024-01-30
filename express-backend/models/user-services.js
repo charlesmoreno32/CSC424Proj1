@@ -32,6 +32,10 @@ function findUserByPhone(phone) {
     return userModel.find({ phone: phone });
 }
 
+function findUserByToken(token) {
+  return userModel.find({ token: token });
+}
+
 async function addUser(user) {
   try {
     if (await findUserByUsername(user.username)){;
@@ -69,6 +73,7 @@ async function updateUser(user) {
 export {
     getUsers,
     findUserByUsername,
+    findUserByToken,
     findUserByPhone,
     addUser,
     updateUser

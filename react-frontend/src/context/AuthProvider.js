@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const handleLogin = async (token) => {
     document.cookie = `token=${token}`;
     setToken(token);
-    navigate("/landing");
   };
 
   const handleLogout = () => {

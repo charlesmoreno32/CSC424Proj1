@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useAuth } from "./context/AuthProvider";
-import {HandleRegistrationAttempt} from "./apis.js"
+import {HandleRegistrationAttempt} from "./apis.js";
+import { useNavigate } from "react-router-dom";
 
 
 export const Registration = () => { 
    const { value } = useAuth();
+   const navigate = useNavigate();
    const [username, setUsername] = useState('');
    const [password, setPassword] = useState('');
    const [password2, setPassword2] = useState('');
@@ -19,6 +21,7 @@ export const Registration = () => {
       .then((res) => res.json())
       .then((res) => {
          value.onLogin(res.token);
+         navigate("/landing");
       })
       .catch((exception) => console.log(exception));
    }

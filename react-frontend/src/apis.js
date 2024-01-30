@@ -47,9 +47,19 @@ function fetchUserByPhone(phone) {
   return promise;
 }
 
+function checkCookie(cookie) {
+  const promise = fetch(`${url}/cookie`, {
+    headers: {
+      authorization: `Bearer ${cookie}`,
+    }
+  });
+  return promise;
+}
+
  export { HandleLoginAttempt,
           HandleRegistrationAttempt,
           getUsers,
           fetchUserByUsername,
-          fetchUserByPhone
+          fetchUserByPhone,
+          checkCookie
         };
