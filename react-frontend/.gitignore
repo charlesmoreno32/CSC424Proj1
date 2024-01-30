@@ -12,6 +12,8 @@
 /build
 
 # misc
+/reactcert
+/reactcert/*
 .DS_Store
 .env.local
 .env.development.local
