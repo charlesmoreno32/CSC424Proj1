@@ -1,36 +1,27 @@
-import React, { useState } from 'react';
-import { handleLoginAttempt } from './apis';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import {HandleLoginAttempt, checkCookie} from "./apis.js";
 
 
-export const Home = ({ onLogin }) => { 
-   /*const { value } = useAuth();*/
+export const Home = () => { 
+   const { value } = useAuth();
    const navigate = useNavigate();
    const [username, setUser] = useState('');
    const [password, setPassword] = useState('');
 
-   /*const handleLoginAttempt = (username, pass) => {
-      if (username === "bj" && pass === "pass424") {
-         value.onLogin();
-      } else {
-         alert("Login Attempt Failed. Invalid username or password.")
-      }
-   }*/
    function handleSubmit(event) {
-      handleLoginAttempt(
-        {
-          username: username,
-          password: password
-        }
-      )
-        .then((res) => {
-          console.log(res);
-          navigate("/landing");
-        })
-        .catch((exception) => console.log(exception));
-    }
-   
+      value.username = username;
+      value.password = password;
+      HandleLoginAttempt({username: value.username, password: value.password})
+      .then((res) => res.json())
+      .then((res) => {
+         value.onLogin(res.token);
+         navigate("/landing");
+      })
+      .catch((exception) => console.log(exception));
+   }
+
    return (
       <>
          <h2>Home (Public)</h2>
@@ -44,6 +35,11 @@ export const Home = ({ onLogin }) => {
             <label>
                <button type="button" onClick={() => handleSubmit({username, password})}>
                   Sign In
+               </button>
+            </label>
+            <label>
+               <button type="button" onClick={() => navigate("/registration")}>
+                  Sign Up
                </button>
             </label>
          </form>

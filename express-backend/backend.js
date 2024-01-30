@@ -1,60 +1,125 @@
-const cors = require("cors");
-const express = require('express');
+import express from "express";
+import https from "https";
+import fs from "fs";
+import cors from "cors";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+/*import crypto from "crypto"*/
+
+import {
+    getUsers,
+    findUserByUsername,
+    findUserByToken,
+    addUser,
+    updateUser
+} from "./models/user-services.js";
+
+dotenv.config();
 
 const app = express();
 const port = 8000;
-
 app.use(cors());
 app.use(express.json());
 
-const users = {
-    users_list: [
-        {
-            id: 1,
-            username: "bj", 
-            password: "pass424"
-        }
-    ]
-}
+https.createServer(
+    {
+      key: fs.readFileSync("key.pem"),
+      cert: fs.readFileSync("cert.pem"),
+    },
+    app
+).listen(port, () => {
+    console.log(`Example app listening at https://localhost:${port}`);
+});
+
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+/* User Login */
 app.post('/users/:user', (req, res) => {
-    const token = null;
-    const user = req.body.username;
-    const password = req.body.password;
-    console.log(user)
-    console.log(password)
-    if(user === users.users_list[0].username && password === users.users_list[0].password) {
-        setToken("2342f2f1d131rf12");
-        res.status(200).send(token);
-    } else {
-        res.status(400).send("Login Attempt Failed. Invalid username or password")
-    }
-
+    const inputUser = req.body.username;
+    const inputPassword = req.body.password;
+    const token = jwt.sign({username: inputUser}, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+    findUserByUsername(inputUser)
+    .then((users) => {
+        if(inputPassword != undefined && inputPassword === users[0].password) {
+            const updatedUser = {username: inputUser, password: inputPassword, phone: users[0].phone, token: token}
+            updateUser(updatedUser)
+            .then((resp) => {
+                res.status(200).send({token: token});
+            })
+            .catch(() => {
+                console.log("Updated user error");
+                res.status(400).send("Updated user error")
+            });
+        } else {
+            res.status(401).send("Login Attempt Failed. Invalid username or password");
+        }
+    })
+    .catch(() => {
+        console.log("Find user by username error");
+        res.status(400).send("Find user by username error")
+    });
 });
 
+/* User Registration */
 app.post('/users', (req, res) => {
-    const userToAdd = req.body;
-    const username = req.params['username'];
-    const password = req.params['password'];
-    const password2 = req.params['password2'];
-    if(password !== password2) {
-        console.log("Error: Passwords do not match")
-    } else if (password.search(/[a-z]/) < 0){
-        console.log("Error: Password must contain at least one lowercase letter")
-    } else if (password.search(/[A-Z]/) < 0) {
-        console.log("Error: Password must contain at least one uppercase letter")
-    } else if (password.search(/[0-9]/) < 0) {
-        console.log("Error: Password must contain at least one number")
+    const username = req.body.username;
+    const password = req.body.password;
+    const password2 = req.body.password2;
+    const phone = req.body.phone;
+    const token = jwt.sign({username: username}, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
+    const user = {username: username, password: password, phone: phone, token: token};
+    if(password != password2) {
+        console.log("Error: Passwords do not match");
+        res.status(403).send("Error: Passwords do not match");
+    } else if (password.search(/[a-z]/) < 0 || password.search(/[A-Z]/) < 0 || password.search(/[0-9]/) < 0 || password.search(/[@$!%*?&]/) < 0){
+        console.log("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
+        res.status(403).send("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
     } else {
-        console.log("Registration successful")
+        addUser(user)
+        .then((resp) => {
+            res.status(200).send({token: token});
+        })
+        .catch(() => {
+            console.log(res.status(400).send("Invalid credentials"));
+        });
     }
-
 });
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+app.get('/users', authenticateToken, async (req, res) => {
+    const username = req.query.username;
+    const phone = req.query.phone;
+    getUsers(username, phone)
+    .then((response) => {
+        res.status(200).send(response);
+    });
 });
+
+app.get('/cookie', authenticateToken, async (req, res) => {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+    findUserByToken(token)
+    .then((response) => {
+        res.status(200).send(response);
+    })
+    .catch((error) => {
+        console.log(res.status(400).send(error));
+    });
+});
+
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers["authorization"];
+    const token = authHeader && authHeader.split(" ")[1];
+  
+    if (token == null) return res.sendStatus(401);
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(403);
+        }
+      req.user = user;
+      next();
+    });
+  }

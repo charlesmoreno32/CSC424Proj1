@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
-import { fakeAuth } from "../utils/FakeAuth";
+import {checkCookie} from "../apis.js";
 
 const AuthContext = createContext({});
 
@@ -9,21 +9,52 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(null);
 
-  const handleLogin = async () => {
-    const token = await fakeAuth();
+  async function validateCookie() {
+    try {
+        const token = document.cookie && document.cookie.split("=")[1];
+        if (token) {
+          checkCookie(token)
+          .then((res) => res.json())
+          .then((json) => {
+              const user = json[0];
+              value.username = user.username;
+              value.password = user.password;
+              value.onLogin(user.token);
+          })
+          .catch(() => {  
+              return false;
+          });
+        } else {
+          return false;
+        }
+    } catch (error) {
+        return false;
+    }
+  } 
+
+  const handleLogin = async (token) => {
+    document.cookie = `token=${token}`;
     setToken(token);
-    navigate("/landing");
   };
 
   const handleLogout = () => {
+    document.cookie = `token=${null}`;
     setToken(null);
+    navigate("/");
   };
 
   const value = {
     token,
+    username: "",
+    password: "",
+    phone: "",
     onLogin: handleLogin,
     onLogout: handleLogout,
   };
+
+  useEffect(() => {
+    validateCookie()
+  }, [] );
 
   return (
     <AuthContext.Provider value={{ value }}>
