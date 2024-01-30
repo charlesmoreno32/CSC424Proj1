@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffectgit  } from "react";
+import { createContext, useContext, useState, useEffect  } from "react";
 import { useNavigate } from "react-router-dom";
 import {checkCookie} from "../apis.js";
 
