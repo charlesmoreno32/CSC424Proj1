@@ -73,7 +73,7 @@ app.post('/users', (req, res) => {
     const user = {username: username, password: password, phone: phone, token: token};
     if(password != password2) {
         console.log("Error: Passwords do not match");
-        res.status(403).send("Error: Passwords do not match")
+        res.status(403).send("Error: Passwords do not match");
     } else if (password.search(/[a-z]/) < 0 || password.search(/[A-Z]/) < 0 || password.search(/[0-9]/) < 0 || password.search(/[@$!%*?&]/) < 0){
         console.log("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
         res.status(403).send("Error: Password must contain at least one lowercase letter, one uppercase letter, one number and one special character");
