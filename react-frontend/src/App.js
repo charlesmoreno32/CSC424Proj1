@@ -30,12 +30,12 @@ const App = () => {
 
 const Navigation = () => {
     const { value } = useAuth();
-
+    const token = document.cookie && document.cookie.split("=")[1];
     return (
         <nav>
             <Link to="/home">Home</Link>
             <Link to="/landing">Landing</Link>
-            {value.token && (
+            {(token !== "null") && (
                 <button type="button" onClick={value.onLogout}>
                     Sign Out
                 </button> )}

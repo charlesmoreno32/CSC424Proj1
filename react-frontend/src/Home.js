@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import {HandleLoginAttempt, checkCookie} from "./apis.js";
+import {HandleLoginAttempt, requestOath} from "./apis.js";
 
+function navigateLink(url) {
+   window.location.href = url;
+ }
 
 export const Home = () => { 
    const { value } = useAuth();
@@ -22,6 +25,15 @@ export const Home = () => {
       .catch((exception) => console.log(exception));
    }
 
+   function handleGoogle(event) {
+      requestOath()
+      .then((res) => res.json())
+      .then((res) => {
+         navigateLink(res.url);
+      })
+      .catch((exception) => console.log(exception));
+   }
+
    return (
       <>
          <h2>Home (Public)</h2>
@@ -35,6 +47,11 @@ export const Home = () => {
             <label>
                <button type="button" onClick={() => handleSubmit({username, password})}>
                   Sign In
+               </button>
+            </label>
+            <label>
+               <button type="button" onClick={() => handleGoogle()}>
+                  Google Sign In 
                </button>
             </label>
             <label>
