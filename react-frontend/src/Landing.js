@@ -3,24 +3,26 @@ import React, { useEffect, useState } from "react";
 import { useAuth, setToken } from "./context/AuthProvider";
 import {getUsers, checkGoogleToken} from "./apis.js";
 import Table from "./components/Table";
+
 const queryParameters = new URLSearchParams(window.location.search);
 const google_token = queryParameters.get("token");
+
 if (google_token) {
   try { 
-        checkGoogleToken(google_token)
-        .then((res) => {
-          if (res.status == 200) {
-            document.cookie = `token=${google_token}`;
-          } else {
-            console.log("Google token no bueno");
-          }
-        })
-        .catch((err) => {  
-          console.log(err)
-        });
-      } catch (err) {
-        console.log(err);
+    checkGoogleToken(google_token)
+    .then((res) => {
+      if (res.status == 200) {
+        document.cookie = `token=${google_token}`;
+      } else {
+        console.log("Google token no bueno");
       }
+    })
+    .catch((err) => {  
+      console.log(err)
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export const Landing = () => {
