@@ -19,6 +19,7 @@ dotenv.config();
 const app = express();
 const port = 8000;
 app.use(cors());
+const sanitizeHtml = require('sanitize-html');
 app.use(express.json());
 
 https.createServer(
@@ -71,6 +72,11 @@ app.post('/users', (req, res) => {
     const phone = req.body.phone;
     const token = jwt.sign({username: username}, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
     const user = {username: username, password: password, phone: phone, token: token};
+
+    if (typeof username !== 'string' || typeof password !== 'string' || typeof password2 !== 'string' || typeof phone !== 'string') {
+        return res.status(400).send("Invalid data types");
+    }
+
     if(password != password2) {
         console.log("Error: Passwords do not match");
         res.status(403).send("Error: Passwords do not match");
@@ -89,8 +95,8 @@ app.post('/users', (req, res) => {
 });
 
 app.get('/users', authenticateToken, async (req, res) => {
-    const username = req.query.username;
-    const phone = req.query.phone;
+    const username = sanitizeHtml(req.query.username);
+    const phone = sanitizeHtml(req.query.phone);
     getUsers(username, phone)
     .then((response) => {
         res.status(200).send(response);
@@ -105,7 +111,8 @@ app.get('/cookie', authenticateToken, async (req, res) => {
         res.status(200).send(response);
     })
     .catch((error) => {
-        console.log(res.status(400).send(error));
+        console.error('Error in cookie get request', error);
+        res.status(500).send("Internal error");
     });
 });
 
