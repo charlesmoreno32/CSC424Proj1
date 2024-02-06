@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from "./context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import {HandleLoginAttempt, requestOath} from "./apis.js";
+import sanitizeHTML from "sanitize-html";
 
 function navigateLink(url) {
    window.location.href = url;

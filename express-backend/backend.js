@@ -5,6 +5,7 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { OAuth2Client } from "google-auth-library";
+import sanitizeHTML from "sanitize-html";
 /*import crypto from "crypto"*/
 
 import {
@@ -99,10 +100,13 @@ app.post('/users/:user', (req, res) => {
     const inputUser = req.body.username;
     const inputPassword = req.body.password;
     const token = jwt.sign({username: inputUser}, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+    if (typeof username !== 'string' || typeof password !== 'string') {
+        return res.status(400).send("Invalid data types entered");
+    }
     findUserByUsername(inputUser)
     .then((users) => {
         if(inputPassword != undefined && inputPassword === users[0].password) {
-            const updatedUser = {username: inputUser, password: inputPassword, phone: users[0].phone, token: token}
+            const updatedUser = {username: sanitizeHTML(inputUser), password: sanitizeHTML(inputPassword), phone: sanitizeHTML(users[0].phone), token: sanitizeHTML(token)}
             updateUser(updatedUser)
             .then((resp) => {
                 res.status(200).send({token: token});
@@ -128,7 +132,10 @@ app.post('/users', (req, res) => {
     const password2 = req.body.password2;
     const phone = req.body.phone;
     const token = jwt.sign({username: username}, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
-    const user = {username: username, password: password, phone: phone, token: token};
+    if (typeof username !== 'string' || typeof password !== 'string' || typeof password2 !== 'string' || typeof phone !== 'string') {
+        return res.status(400).send("Invalid data types entered");
+    }
+    const user = {username: sanitizeHTML(username), password: sanitizeHTML(password), phone: sanitizeHTML(phone), token: sanitizeHTML(token)};
     if(password != password2) {
         console.log("Error: Passwords do not match");
         res.status(403).send("Error: Passwords do not match");
@@ -147,8 +154,8 @@ app.post('/users', (req, res) => {
 });
 
 app.get('/users', authenticateToken, async (req, res) => {
-    const username = req.query.username;
-    const phone = req.query.phone;
+    const username = sanitizeHTML(req.query.username);
+    const phone = sanitizeHTML(req.query.phone);
     getUsers(username, phone)
     .then((response) => {
         res.status(200).send(response);
