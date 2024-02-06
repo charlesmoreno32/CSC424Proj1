@@ -147,8 +147,9 @@ app.post('/users', (req, res) => {
         .then((resp) => {
             res.status(200).send({token: token});
         })
-        .catch(() => {
-            console.log(res.status(400).send("Invalid credentials"));
+        .catch((err) => {
+            console.log(err);
+            res.status(400).send("Registration Error");
         });
     }
 });
@@ -170,7 +171,8 @@ app.get('/token', authenticateToken, async (req, res) => {
         res.status(200).send(response);
     })
     .catch((error) => {
-        console.log(res.status(400).send(error));
+        console.log(error);
+        res.status(400).send("Invalid token");
     });
 });
 
