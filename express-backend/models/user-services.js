@@ -25,7 +25,7 @@ function getUsers(username, phone) {
   }
 
 function findUserByUsername(username) {
-    return userModel.find({ username: username });
+  return userModel.find({ username: username });
 }
 
 function findUserByPhone(phone) {

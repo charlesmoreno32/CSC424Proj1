@@ -47,11 +47,23 @@ function fetchUserByPhone(phone) {
   return promise;
 }
 
-function checkCookie(cookie) {
-  const promise = fetch(`${url}/cookie`, {
+function checkToken(token) {
+  const promise = fetch(`${url}/token`, {
     headers: {
-      authorization: `Bearer ${cookie}`,
+      authorization: `Bearer ${token}`,
     }
+  });
+  return promise;
+}
+
+function checkGoogleToken(token) {
+  const promise = fetch(`${url}/token=${token}`);
+  return promise;
+}
+
+function requestOath() {
+  const promise = fetch(`${url}/request`, {
+    method: "POST",
   });
   return promise;
 }
@@ -61,5 +73,7 @@ function checkCookie(cookie) {
           getUsers,
           fetchUserByUsername,
           fetchUserByPhone,
-          checkCookie
+          checkToken,
+          requestOath,
+          checkGoogleToken
         };

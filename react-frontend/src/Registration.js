@@ -15,7 +15,6 @@ export const Registration = () => {
    function handleSubmit(event) {
       value.username = username;
       value.password = password;
-      value.password2 = password2;
       value.phone = phone;
       HandleRegistrationAttempt({username: value.username, password: value.password, password2: password2, phone: value.phone})
       .then((res) => res.json())
