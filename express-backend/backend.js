@@ -100,11 +100,13 @@ app.post('/users/:user', (req, res) => {
     const inputUser = req.body.username;
     const inputPassword = req.body.password;
     const token = jwt.sign({username: inputUser}, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+    if (typeof username !== 'string' || typeof password !== 'string') {
+        return res.status(400).send("Invalid data types entered");
+    }
     findUserByUsername(inputUser)
     .then((users) => {
         if(inputPassword != undefined && inputPassword === users[0].password) {
             const updatedUser = {username: sanitizeHTML(inputUser), password: sanitizeHTML(inputPassword), phone: sanitizeHTML(users[0].phone), token: sanitizeHTML(token)}
-            console.log(updatedUser);
             updateUser(updatedUser)
             .then((resp) => {
                 res.status(200).send({token: token});
